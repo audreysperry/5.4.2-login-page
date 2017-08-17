@@ -26,12 +26,42 @@ const logins = [
   {username: "imdan", password: "word"}
 ]
 
+const error = "invalid login credentials. Please try again.";
+
 app.get('/', (req, res) => {
-  const loggedIn = req.session.login;
-  if (!loggedIn) {
-    res.render('login');
-  }
-  res.render('Index');
+  loggedIn = req.session.login !== undefined;
+  if (loggedIn) {
+  res.render('index');
+} else {
+  res.redirect('/login');
+}
 });
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', (req, res) => {
+  let username = req.body.username;
+  console.log(username);
+  let password = req.body.password;
+  console.log(password);
+
+  for (var i = 0; i < logins.length; i++) {
+    let login = logins[i];
+    if (login.username === username && login.password === password) {
+      res.render('index', {username : username});
+      return;
+    }
+  }
+  res.render('login', {error: error});
+});
+
+// app.post('/login', (req, res) => {
+//   req.session.username = req.body.username;
+//   req.session.login = req.body.true;
+//
+//   res.redirect('/xw');
+// });
 
 app.listen(3000);
