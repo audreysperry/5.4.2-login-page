@@ -31,7 +31,7 @@ const error = "invalid login credentials. Please try again.";
 app.get('/', (req, res) => {
   loggedIn = req.session.login !== undefined;
   if (loggedIn) {
-  res.render('index');
+  res.render('index', {username : req.session.username});
 } else {
   res.redirect('/login');
 }
@@ -50,12 +50,18 @@ app.post('/login', (req, res) => {
   for (var i = 0; i < logins.length; i++) {
     let login = logins[i];
     if (login.username === username && login.password === password) {
+      req.session.login = true;
+      req.session.username = username;
       res.render('index', {username : username});
       return;
     }
   }
   res.render('login', {error: error});
 });
+
+app.post('/', (req, res) => {
+
+})
 
 // app.post('/login', (req, res) => {
 //   req.session.username = req.body.username;
